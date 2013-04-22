@@ -18,13 +18,13 @@ public abstract class AbstractMuseumXmlDocument<T extends ObjectFactory> impleme
     private final String language;
     private final T objectFactory;
 
-    public AbstractMuseumXmlDocument(String language) {
+    public AbstractMuseumXmlDocument() {
         this.language = initLanguage();
         this.objectFactory = initObjectFactory();
         init();
     }
 
-    public AbstractMuseumXmlDocument(InputStream in, String language) throws IOException, XmlException {
+    public AbstractMuseumXmlDocument(InputStream in) throws IOException, XmlException {
         this.language = initLanguage();
         this.objectFactory = initObjectFactory();
         init(in);
