@@ -1,0 +1,25 @@
+xbMuseumXmlCommons
+Copyright 2013 Gunnar Kappei
+
+This product includes software developed by
+The Apache Software Foundation (http://www.apache.org/).
+
+    Apache XMLBeans 2.6.0 -> http://www.xmlbeans.apache.org
+    [ASL 2.0, http://www.apache.org/licenses/]
+
+This product includes software developed by
+Saxonica Limited (http://www.saxonica.com/).
+
+     Saxon 9.5HE -> https://sourceforge.net/svn/?group_id=29872
+     [MPL 2.0, http://www.mozilla.org/MPL/MPL-2.0.html]
+
+--------------------------------------------------------------------------------
+src/org/apache/xmlbeans/impl/xpath/saxon/XBeansXPathSaxon95.java is a patched
+version of the original src/org/apache/xmlbeans/impl/xpath/saxon/XBeansXPathSaxon.java
+file shipped with XMLBeans. The original file was modified in order to work with
+SaxonHE 9.5, which was released under a more compatible license.
+
+Copyright (C) 2013 Gunnar Kappei (gkappei@web.de). Verbatim copying
+and distribution of this entire article is permitted in any medium,
+provided this notice is preserved.
+--------------------------------------------------------------------------------
