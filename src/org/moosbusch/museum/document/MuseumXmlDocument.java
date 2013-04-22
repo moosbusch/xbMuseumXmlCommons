@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.util.Locale;
 import org.apache.xmlbeans.ObjectFactory;
 import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlObject;
 
 /**
  *
@@ -30,7 +31,7 @@ public interface MuseumXmlDocument<T extends ObjectFactory> {
 
     public String getLanguage();
 
-    public Object getObjectByXPath(String xpath);
+    public XmlObject getObjectByXPath(String xpath);
 
     public T getObjectFactory();
 }
