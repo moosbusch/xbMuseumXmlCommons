@@ -13,6 +13,12 @@ Saxonica Limited (http://www.saxonica.com/).
      Saxon 9.5HE -> https://sourceforge.net/svn/?group_id=29872
      [MPL 2.0, http://www.mozilla.org/MPL/MPL-2.0.html]
 
+This product includes software developed by
+Google (http://www.google.com/).
+
+    Google Guice 3.0 -> http://code.google.com/p/google-guice/
+    [ASL 2.0, http://www.apache.org/licenses/]
+
 --------------------------------------------------------------------------------
 src/org/apache/xmlbeans/impl/xpath/saxon/XBeansXPathSaxon95.java is a patched
 version of the original src/org/apache/xmlbeans/impl/xpath/saxon/XBeansXPathSaxon.java
