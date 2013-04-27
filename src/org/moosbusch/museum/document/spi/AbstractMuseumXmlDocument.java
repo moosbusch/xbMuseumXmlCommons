@@ -119,6 +119,10 @@ public abstract class AbstractMuseumXmlDocument<T extends XmlObject,
         this.rootWrapper = rootWrapperElement;
     }
 
+    public <X extends XmlObject> X createTypedObject(Class<X> type) {
+        return getObjectFactory().createTypedObject(type);
+    }
+
     @Override
     public V getObjectFactory() {
         return objectFactory;

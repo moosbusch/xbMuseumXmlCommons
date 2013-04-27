@@ -45,5 +45,7 @@ public interface MuseumXmlDocument<T extends XmlObject,
 
     public <X extends Object> Collection <X> getObjectsByXPath(String xpath);
 
+    public <X extends XmlObject> X createTypedObject(Class<X> type);
+
     public V getObjectFactory();
 }
