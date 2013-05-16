@@ -24,9 +24,7 @@ import org.moosbusch.museum.inject.MuseumXmlModule;
  *
  * @author moosbusch
  */
-public abstract class AbstractMuseumXmlDocument<T extends XmlObject,
-        V extends MuseumXmlObjectFactory<? extends MuseumXmlModule, T>,
-        U extends XmlObject, E extends XmlObject>
+public abstract class AbstractMuseumXmlDocument<T extends XmlObject, V extends MuseumXmlObjectFactory<? extends MuseumXmlModule, T>, U extends XmlObject, E extends XmlObject>
         implements MuseumXmlDocument<T, V, U, E> {
 
     private final V objectFactory;
@@ -98,12 +96,14 @@ public abstract class AbstractMuseumXmlDocument<T extends XmlObject,
         }
     }
 
+    @Override
     public void addItem(E entry) {
         synchronized (getRootWrapperElement().monitor()) {
             getItems().add(entry);
         }
     }
 
+    @Override
     public void removeItem(E entry) {
         synchronized (getRootWrapperElement().monitor()) {
             getItems().remove(entry);
@@ -119,12 +119,16 @@ public abstract class AbstractMuseumXmlDocument<T extends XmlObject,
         this.rootWrapper = rootWrapperElement;
     }
 
+    @Override
     public <X extends XmlObject> X createTypedObject(Class<X> type) {
-        return getObjectFactory().createTypedObject(type);
+        synchronized (getRootWrapperElement().monitor()) {
+            return getObjectFactory().createTypedObject(type);
+        }
     }
 
     @Override
     public V getObjectFactory() {
         return objectFactory;
     }
+
 }

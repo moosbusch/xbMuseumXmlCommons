@@ -33,7 +33,7 @@ public abstract class AbstractMuseumXmlModule extends AbstractModule implements 
         }
     }
 
-    protected <T extends XmlObject> T entityCreated(T entity) {
+    protected <T extends XmlObject> T injectMembers(T entity) {
         getDefaultInjector().injectMembers(entity);
         return entityCreatedImpl(entity);
     }

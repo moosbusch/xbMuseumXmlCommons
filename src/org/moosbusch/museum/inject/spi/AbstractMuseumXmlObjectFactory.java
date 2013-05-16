@@ -17,9 +17,29 @@ import org.moosbusch.museum.inject.MuseumXmlObjectFactory;
 public abstract class AbstractMuseumXmlObjectFactory<T extends Module, V extends XmlObject>
     implements MuseumXmlObjectFactory<T, V>{
 
+    public static final String XML_SCHEMA_NS_URI =
+            "http://www.w3.org/2001/XMLSchema-instance";
+    public static final String SCHEMA_LOCATION_ATTR = "schemaLocation";
+    private Injector injector;
+    private T module;
+
+    protected abstract T createModule();
+
     @Override
-    public Injector getInjector() {
-        return Guice.createInjector(getModule());
+    public final Injector getInjector() {
+        if (this.injector == null) {
+            this.injector = Guice.createInjector(getModule());
+        }
+
+        return injector;
+    }
+
+    public final T getModule() {
+        if (this.module == null) {
+            this.module = createModule();
+        }
+
+        return module;
     }
 
     @Override

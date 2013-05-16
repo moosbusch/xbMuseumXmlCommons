@@ -5,6 +5,8 @@
 package org.moosbusch.museum.inject;
 
 import com.google.inject.Module;
+import com.google.inject.Provides;
+import org.moosbusch.museum.document.MuseumXmlDocument;
 
 /**
  *
@@ -12,6 +14,9 @@ import com.google.inject.Module;
  */
 public interface MuseumXmlModule extends Module {
 
+    @Provides
+    public MuseumXmlDocument<?, ?, ? ,?> createDocument();
+
     public String getLanguage();
-    
+
 }
