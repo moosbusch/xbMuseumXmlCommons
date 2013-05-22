@@ -54,6 +54,10 @@ public abstract class AbstractMuseumXmlDocument<T extends XmlObject, V extends M
 
     protected abstract V createObjectFactory();
 
+    protected abstract T loadDocumentImpl(InputStream in) throws IOException, XmlException;
+
+    protected abstract void saveDocumentImpl(T rootElement, OutputStream out) throws IOException;
+
     @Override
     public void clearDocument() {
         setRootWrapperElement(getObjectFactory().createRootElement());
@@ -81,16 +85,17 @@ public abstract class AbstractMuseumXmlDocument<T extends XmlObject, V extends M
     }
 
     @Override
-    public void loadDocument(InputStream input) throws IOException, XmlException {
+    public final void loadDocument(InputStream input) throws IOException, XmlException {
         synchronized (getRootWrapperElement().monitor()) {
-            setRootWrapperElement(getObjectFactory().loadDocument(input));
+            setRootWrapperElement(loadDocumentImpl(input));
+            input.close();
         }
     }
 
     @Override
-    public void saveDocument(OutputStream output) throws IOException {
+    public final void saveDocument(OutputStream output) throws IOException {
         synchronized (getRootWrapperElement().monitor()) {
-            getObjectFactory().saveDocument(getRootWrapperElement(), output);
+            saveDocumentImpl(getRootWrapperElement(), output);
             output.flush();
             output.close();
         }

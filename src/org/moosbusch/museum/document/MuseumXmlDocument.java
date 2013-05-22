@@ -24,18 +24,22 @@ public interface MuseumXmlDocument<T extends XmlObject,
 
     public static final String PATH_DELEGATE_INTERFACE_CLASS =
             "org.apache.xmlbeans.impl.xpath.saxon.XBeansXPathSaxon95";
+    public static final String XML_SCHEMA_NS_URI =
+            "http://www.w3.org/2001/XMLSchema-instance";
+    public static final String SCHEMA_LOCATION_ATTR = "schemaLocation";
     public static final String DEFAULT_LANGUAGE =
             Locale.getDefault().getLanguage();
+    public static final String DEFAULT_RELATED_ENCODING = "DC";
 
     public T getRootWrapperElement();
 
     public U getRootElement();
 
+    public void clearDocument();
+
     public void loadDocument(InputStream input) throws IOException, XmlException;
 
     public void saveDocument(OutputStream output) throws IOException;
-
-    public void clearDocument();
 
     public void addItem(E entry);
 
