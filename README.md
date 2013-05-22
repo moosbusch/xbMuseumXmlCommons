@@ -1,4 +1,5 @@
 xbMuseumXmlCommons
 ==================
 
-Common classes for both xbMuseumVok and xbMuseumDat. Required for both of these projects to function.
+Common interfaces and classes for xbCDWALite, xbLido, xbMuseumDat and xbMuseumVok.
+Required dependency for each of those projects to work.
