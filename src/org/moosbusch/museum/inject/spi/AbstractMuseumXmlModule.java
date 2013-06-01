@@ -5,11 +5,6 @@
 package org.moosbusch.museum.inject.spi;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.TypeLiteral;
-import com.google.inject.matcher.Matchers;
-import com.google.inject.spi.InjectionListener;
-import com.google.inject.spi.TypeEncounter;
-import com.google.inject.spi.TypeListener;
 import org.apache.xmlbeans.XmlObject;
 import org.moosbusch.museum.inject.MuseumXmlModule;
 import org.moosbusch.museum.inject.MuseumXmlObjectFactory;
@@ -37,7 +32,6 @@ public abstract class AbstractMuseumXmlModule extends AbstractModule
     @Override
     protected final void configure() {
         binder().disableCircularProxies();
-        binder().bindListener(Matchers.any(), new InjectionListenerImpl());
         configureImpl();
     }
 
@@ -55,27 +49,4 @@ public abstract class AbstractMuseumXmlModule extends AbstractModule
         return objectFactory;
     }
 
-    private class InjectionListenerImpl implements TypeListener,
-            InjectionListener {
-
-        @Override
-        public void afterInjection(Object injectee) {
-            if (injectee != null) {
-                if (injectee instanceof XmlObject) {
-                    XmlObject currentInjectee = (XmlObject) injectee;
-
-                    synchronized (currentInjectee.monitor()) {
-                        getObjectFactory().afterInjectedChildMembers(currentInjectee);
-                    }
-                }
-            }
-        }
-
-        @Override
-        public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-            if (XmlObject.class.isAssignableFrom(type.getRawType())) {
-                encounter.register(InjectionListenerImpl.this);
-            }
-        }
-    }
 }

@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  * @author moosbusch
  */
 @BindingAnnotation
-@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RelatedEncoding {
 

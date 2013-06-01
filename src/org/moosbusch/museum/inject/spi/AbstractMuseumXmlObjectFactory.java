@@ -4,11 +4,14 @@
  */
 package org.moosbusch.museum.inject.spi;
 
+import org.moosbusch.museum.inject.impl.XmlInjectorImpl;
 import com.google.inject.Guice;
-import com.google.inject.Injector;
 import org.apache.xmlbeans.XmlObject;
+import org.moosbusch.museum.inject.XmlInjector;
 import org.moosbusch.museum.inject.MuseumXmlModule;
 import org.moosbusch.museum.inject.MuseumXmlObjectFactory;
+import org.moosbusch.museum.inject.evt.XmlInjectionListener;
+import org.moosbusch.museum.inject.evt.XmlPostProcessor;
 
 /**
  *
@@ -17,40 +20,33 @@ import org.moosbusch.museum.inject.MuseumXmlObjectFactory;
 public abstract class AbstractMuseumXmlObjectFactory<T extends MuseumXmlModule, V extends XmlObject>
         implements MuseumXmlObjectFactory<T, V> {
 
-    private Injector injector;
+    private XmlInjector injector;
     private T module;
 
     protected abstract T createModule();
 
     @Override
-    public final Injector getInjector() {
-        synchronized (this) {
-            if (this.injector == null) {
-                this.injector = Guice.createInjector(getModule());
-            }
-
-            return injector;
+    public XmlInjector getInjector() {
+        if (this.injector == null) {
+            this.injector = new XmlInjectorImpl(
+                    Guice.createInjector(getModule()));
         }
+
+        return injector;
     }
 
     @Override
-    public final T getModule() {
-        synchronized (this) {
-            if (this.module == null) {
-                this.module = createModule();
-            }
-
-            return module;
+    public T getModule() {
+        if (this.module == null) {
+            this.module = createModule();
         }
+
+        return module;
     }
 
     @Override
-    public final <X extends XmlObject> void injectChildMembers(X entity) {
-        final Object monitor = entity.monitor();
-
-        synchronized (monitor) {
-            getInjector().injectMembers(entity);
-        }
+    public <X extends XmlObject> void injectChildMembers(X entity) {
+        getInjector().injectMembers(entity);
     }
 
     @Override
@@ -65,7 +61,22 @@ public abstract class AbstractMuseumXmlObjectFactory<T extends MuseumXmlModule, 
     }
 
     @Override
-    public <X extends XmlObject> void afterInjectedChildMembers(X entity) {
+    public void addInjectionListener(XmlInjectionListener l) {
+        getInjector().addInjectionListener(l);
     }
 
+    @Override
+    public void removeInjectionListener(XmlInjectionListener l) {
+        getInjector().removeInjectionListener(l);
+    }
+
+    @Override
+    public void addXmlPostProcessor(XmlPostProcessor p) {
+        getInjector().addXmlPostProcessor(p);
+    }
+
+    @Override
+    public void removeXmlPostProcessor(XmlPostProcessor p) {
+        getInjector().removeXmlPostProcessor(p);
+    }
 }

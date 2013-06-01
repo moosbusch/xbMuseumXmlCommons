@@ -65,54 +65,44 @@ public abstract class AbstractMuseumXmlDocument<T extends XmlObject, V extends M
 
     @Override
     public <X extends Object> Collection<X> getObjectsByXPath(String xpath) {
-        synchronized (getRootWrapperElement().monitor()) {
-            XmlOptions options = new XmlOptions();
-            options.put(Path.PATH_DELEGATE_INTERFACE, PATH_DELEGATE_INTERFACE_CLASS);
-            XmlCursor cur = getRootElement().newCursor();
-            cur.selectPath(xpath, options);
-            Set<X> result = new LinkedHashSet<X>();
+        XmlOptions options = new XmlOptions();
+        options.put(Path.PATH_DELEGATE_INTERFACE, PATH_DELEGATE_INTERFACE_CLASS);
+        XmlCursor cur = getRootElement().newCursor();
+        cur.selectPath(xpath, options);
+        Set<X> result = new LinkedHashSet<X>();
 
-            while (cur.hasNextSelection()) {
-                if (cur.toNextSelection()) {
-                    result.add((X) cur.getObject());
-                }
+        while (cur.hasNextSelection()) {
+            if (cur.toNextSelection()) {
+                result.add((X) cur.getObject());
             }
-
-            cur.dispose();
-
-            return Collections.unmodifiableCollection(result);
         }
+
+        cur.dispose();
+
+        return Collections.unmodifiableCollection(result);
     }
 
     @Override
     public final void loadDocument(InputStream input) throws IOException, XmlException {
-        synchronized (getRootWrapperElement().monitor()) {
-            setRootWrapperElement(loadDocumentImpl(input));
-            input.close();
-        }
+        setRootWrapperElement(loadDocumentImpl(input));
+        input.close();
     }
 
     @Override
     public final void saveDocument(OutputStream output) throws IOException {
-        synchronized (getRootWrapperElement().monitor()) {
-            saveDocumentImpl(getRootWrapperElement(), output);
-            output.flush();
-            output.close();
-        }
+        saveDocumentImpl(getRootWrapperElement(), output);
+        output.flush();
+        output.close();
     }
 
     @Override
     public void addItem(E entry) {
-        synchronized (getRootWrapperElement().monitor()) {
-            getItems().add(entry);
-        }
+        getItems().add(entry);
     }
 
     @Override
     public void removeItem(E entry) {
-        synchronized (getRootWrapperElement().monitor()) {
-            getItems().remove(entry);
-        }
+        getItems().remove(entry);
     }
 
     @Override
@@ -126,14 +116,11 @@ public abstract class AbstractMuseumXmlDocument<T extends XmlObject, V extends M
 
     @Override
     public <X extends XmlObject> X createTypedObject(Class<X> type) {
-        synchronized (getRootWrapperElement().monitor()) {
-            return getObjectFactory().createTypedObject(type);
-        }
+        return getObjectFactory().createTypedObject(type);
     }
 
     @Override
     public V getObjectFactory() {
         return objectFactory;
     }
-
 }
