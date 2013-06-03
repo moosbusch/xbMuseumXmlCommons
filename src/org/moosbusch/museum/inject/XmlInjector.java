@@ -1,10 +1,11 @@
 /*
- * 
+ *
  *
  */
 package org.moosbusch.museum.inject;
 
 import com.google.inject.Injector;
+import org.apache.xmlbeans.XmlObject;
 import org.moosbusch.museum.inject.evt.XmlInjectionListener;
 import org.moosbusch.museum.inject.evt.XmlPostProcessor;
 
@@ -21,8 +22,8 @@ public interface XmlInjector extends Injector {
 
     public void removeInjectionListener(XmlInjectionListener o);
 
-    public void addXmlPostProcessor(XmlPostProcessor p);
+    public void registerXmlPostProcessor(Class<? extends XmlObject> targetClass, XmlPostProcessor p);
 
-    public void removeXmlPostProcessor(XmlPostProcessor p);
+    public void unregisterXmlPostProcessor(Class<? extends XmlObject> targetClass);
 
 }

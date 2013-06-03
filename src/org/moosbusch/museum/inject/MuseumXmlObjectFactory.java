@@ -1,5 +1,5 @@
 /*
- * 
+ *
  *
  */
 package org.moosbusch.museum.inject;
@@ -30,7 +30,7 @@ public interface MuseumXmlObjectFactory<M extends MuseumXmlModule, R extends Xml
 
     public void removeInjectionListener(XmlInjectionListener l);
 
-    public void addXmlPostProcessor(XmlPostProcessor p);
+    public void registerXmlPostProcessor(Class<? extends XmlObject> targetClass, XmlPostProcessor p);
 
-    public void removeXmlPostProcessor(XmlPostProcessor p);
+    public void unregisterXmlPostProcessor(Class<? extends XmlObject> targetClass);
 }

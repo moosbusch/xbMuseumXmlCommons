@@ -1,5 +1,5 @@
 /*
- * 
+ *
  *
  */
 package org.moosbusch.museum.inject.spi;
@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,12 +37,12 @@ public abstract class AbstractXmlInjector implements XmlInjector {
 
     private final Injector wrappedInjector;
     private final Set<XmlInjectionListener> injectionListeners;
-    private final Set<XmlPostProcessor> xmlPostProcessors;
+    private final Map<Class<? extends XmlObject>, XmlPostProcessor<? extends XmlObject>> xmlPostProcessors;
 
     public AbstractXmlInjector(Injector wrappedInjector) {
         this.wrappedInjector = wrappedInjector;
         this.injectionListeners = new HashSet<XmlInjectionListener>();
-        this.xmlPostProcessors = new HashSet<XmlPostProcessor>();
+        this.xmlPostProcessors = new HashMap<Class<? extends XmlObject>, XmlPostProcessor<? extends XmlObject>>();
     }
 
     protected abstract void injectXmlMembers(XmlObject instance);
@@ -114,8 +115,8 @@ public abstract class AbstractXmlInjector implements XmlInjector {
         return Collections.unmodifiableCollection(injectionListeners);
     }
 
-    public Set<XmlPostProcessor> getXmlPostProcessors() {
-        return Collections.unmodifiableSet(xmlPostProcessors);
+    protected Map<Class<? extends XmlObject>, XmlPostProcessor<? extends XmlObject>> getXmlPostProcessors() {
+        return Collections.unmodifiableMap(xmlPostProcessors);
     }
 
     protected Object createParameterValue(Method m, Class<?> paramType,
@@ -143,15 +144,50 @@ public abstract class AbstractXmlInjector implements XmlInjector {
         }
     }
 
-    protected void notifyPostProcessors(XmlObject instance) {
-        for (XmlPostProcessor xmlPostProcessor
-                : getXmlPostProcessors()) {
-            Class<? extends XmlObject> targetClass =
-                    xmlPostProcessor.getTargetClass();
+    protected XmlPostProcessor<? extends XmlObject> getPostProcessorForClass(
+            Class<? extends XmlObject> elementClass) {
+        if (!getXmlPostProcessors().isEmpty()) {
+            XmlPostProcessor<? extends XmlObject> result =
+                    getXmlPostProcessors().get(elementClass);
 
-            if (targetClass.isAssignableFrom(instance.getClass())) {
-                xmlPostProcessor.postProcess(instance);
+            if (result != null) {
+                return result;
+            } else {
+                Class<?> superClass = elementClass.getSuperclass();
+                
+                if (XmlObject.class.isAssignableFrom(superClass)) {
+                    result = getXmlPostProcessors().get(superClass);
+
+                    if (result != null) {
+                        return result;
+                    } else {
+                        Class<?>[] interfaces = elementClass.getInterfaces();
+
+                        for (Class<?> iFace : interfaces) {
+                            if (XmlObject.class.isAssignableFrom(iFace)) {
+                                result = getXmlPostProcessors().get(iFace);
+
+                                if (result != null) {
+                                    return result;
+                                }
+                            }
+                        }
+                    }
+                }
+
             }
+        }
+
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void notifyPostProcessors(XmlObject instance) {
+        XmlPostProcessor xmlPostProcessor =
+                getPostProcessorForClass(instance.getClass());
+
+        if (xmlPostProcessor != null) {
+            xmlPostProcessor.postProcess(instance);
         }
     }
 
@@ -263,12 +299,12 @@ public abstract class AbstractXmlInjector implements XmlInjector {
     }
 
     @Override
-    public void addXmlPostProcessor(XmlPostProcessor p) {
-        xmlPostProcessors.add(p);
+    public void registerXmlPostProcessor(Class<? extends XmlObject> targetClass, XmlPostProcessor p) {
+        xmlPostProcessors.put(targetClass, p);
     }
 
     @Override
-    public void removeXmlPostProcessor(XmlPostProcessor p) {
-        xmlPostProcessors.remove(p);
+    public void unregisterXmlPostProcessor(Class<? extends XmlObject> targetClass) {
+        xmlPostProcessors.remove(targetClass);
     }
 }

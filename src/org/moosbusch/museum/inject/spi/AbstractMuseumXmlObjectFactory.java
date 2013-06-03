@@ -1,5 +1,5 @@
 /*
- * 
+ *
  *
  */
 package org.moosbusch.museum.inject.spi;
@@ -71,12 +71,12 @@ public abstract class AbstractMuseumXmlObjectFactory<T extends MuseumXmlModule, 
     }
 
     @Override
-    public void addXmlPostProcessor(XmlPostProcessor p) {
-        getInjector().addXmlPostProcessor(p);
+    public void registerXmlPostProcessor(Class<? extends XmlObject> targetClass, XmlPostProcessor p) {
+        getInjector().registerXmlPostProcessor(targetClass, p);
     }
 
     @Override
-    public void removeXmlPostProcessor(XmlPostProcessor p) {
-        getInjector().removeXmlPostProcessor(p);
+    public void unregisterXmlPostProcessor(Class<? extends XmlObject> targetClass) {
+        getInjector().unregisterXmlPostProcessor(targetClass);
     }
 }
