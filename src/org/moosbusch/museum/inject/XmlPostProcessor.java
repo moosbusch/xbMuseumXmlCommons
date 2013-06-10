@@ -2,7 +2,7 @@
  *
  *
  */
-package org.moosbusch.museum.inject.evt;
+package org.moosbusch.museum.inject;
 
 import org.apache.xmlbeans.XmlObject;
 

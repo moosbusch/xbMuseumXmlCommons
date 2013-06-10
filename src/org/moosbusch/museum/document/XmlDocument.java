@@ -1,10 +1,10 @@
 /*
- * 
+ *
  *
  */
 package org.moosbusch.museum.document;
 
-import org.moosbusch.museum.inject.MuseumXmlObjectFactory;
+import org.moosbusch.museum.inject.XmlObjectFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,14 +12,14 @@ import java.util.Collection;
 import java.util.Locale;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
-import org.moosbusch.museum.inject.MuseumXmlModule;
+import org.moosbusch.museum.inject.XmlModule;
 
 /**
  *
  * @author moosbusch
  */
-public interface MuseumXmlDocument<T extends XmlObject,
-        V extends MuseumXmlObjectFactory<? extends MuseumXmlModule, T>,
+public interface XmlDocument<T extends XmlObject,
+        V extends XmlObjectFactory<? extends XmlModule, T>,
         U extends XmlObject, E extends XmlObject> {
 
     public static final String PATH_DELEGATE_INTERFACE_CLASS =
@@ -41,11 +41,11 @@ public interface MuseumXmlDocument<T extends XmlObject,
 
     public void saveDocument(OutputStream output) throws IOException;
 
-    public void addItem(E entry);
+    public void addRecord(E record);
 
-    public void removeItem(E entry);
+    public void removeRecord(E record);
 
-    public Collection<E> getItems();
+    public Collection<E> getRecords();
 
     public <X extends Object> Collection <X> getObjectsByXPath(String xpath);
 

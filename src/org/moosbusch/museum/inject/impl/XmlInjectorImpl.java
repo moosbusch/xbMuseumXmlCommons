@@ -1,5 +1,5 @@
 /*
- * 
+ *
  *
  */
 package org.moosbusch.museum.inject.impl;
@@ -13,8 +13,12 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.xmlbeans.SchemaProperty;
+import org.apache.xmlbeans.SchemaType;
 import org.apache.xmlbeans.XmlObject;
+import org.moosbusch.museum.inject.XmlInjector;
 import org.moosbusch.museum.inject.spi.AbstractXmlInjector;
+import org.moosbusch.museum.inject.util.XmlInjectionUtil;
 
 /**
  *
@@ -26,11 +30,35 @@ public class XmlInjectorImpl extends AbstractXmlInjector {
         super(wrappedInjector);
     }
 
+    protected boolean isInjectionNeeded(XmlObject instance, Method method) {
+        SchemaType schemaType = instance.schemaType();
+        SchemaProperty[] properties = schemaType.getProperties();
+        String methodName = method.getName();
+        String fieldName;
+
+        if ((methodName.endsWith(XmlInjector.ARRAY_METHOD_SUFFIX))
+                || (methodName.endsWith(XmlInjector.ARRAY_METHOD_SUFFIX))) {
+            return false;
+        }
+
+        if (methodName.startsWith(XmlInjector.SET_METHOD_PREFIX)) {
+            fieldName = methodName.substring(3);
+
+            for (SchemaProperty property : properties) {
+                if (property.getJavaPropertyName().equals(fieldName)) {
+                    return (property.getMinOccurs().intValue() > 0);
+                }
+            }
+        }
+
+        return true;
+    }
+
     @Override
-    protected void injectXmlMembers(XmlObject instance) {
+    public void injectXmlMembers(XmlObject injectee) {
         Set<InjectionPoint> injectionPoints =
                 InjectionPoint.forInstanceMethodsAndFields(
-                instance.getClass());
+                injectee.getClass());
 
         for (InjectionPoint injectionPoint : injectionPoints) {
             Member member = injectionPoint.getMember();
@@ -38,40 +66,29 @@ public class XmlInjectorImpl extends AbstractXmlInjector {
             if (member instanceof Method) {
                 Method method = (Method) member;
 
-                if (isInjectableSetterMethod(method)) {
+                if (XmlInjectionUtil.isInjectableSetterMethod(this, method)) {
                     Annotation bindingAnnotation =
-                            getParameterBindingAnnotation(method);
+                            XmlInjectionUtil.getParameterBindingAnnotation(method);
                     Class<?> parameterType = method.getParameterTypes()[0];
-                    Object paramValue = createParameterValue(
-                            method, parameterType, bindingAnnotation);
+                    Object paramValue = XmlInjectionUtil.createParameterValue(
+                            this, parameterType, bindingAnnotation);
 
-                    //                    SchemaType schemaType = instance.schemaType();
-                    //                    SchemaProperty[] attributeProperties =
-                    //                            schemaType.getAttributeProperties();
-                    //                    SchemaProperty[] elementProperties =
-                    //                            schemaType.getElementProperties();
-
-                    try {
-                        method.invoke(instance, paramValue);
-                    } catch (IllegalAccessException ex) {
-                        Logger.getLogger(XmlInjectorImpl.class.getName()).log(
-                                Level.SEVERE, null, ex);
-                    } catch (IllegalArgumentException ex) {
-                        Logger.getLogger(XmlInjectorImpl.class.getName()).log(
-                                Level.SEVERE, null, ex);
-                    } catch (InvocationTargetException ex) {
-                        Logger.getLogger(XmlInjectorImpl.class.getName()).log(
-                                Level.SEVERE, null, ex);
-                    } finally {
-
+                    if (isInjectionNeeded(injectee, method)) {
+                        try {
+                            method.invoke(injectee, paramValue);
+                        } catch (IllegalAccessException ex) {
+                            Logger.getLogger(XmlInjectorImpl.class.getName()).log(
+                                    Level.SEVERE, null, ex);
+                        } catch (IllegalArgumentException ex) {
+                            Logger.getLogger(XmlInjectorImpl.class.getName()).log(
+                                    Level.SEVERE, null, ex);
+                        } catch (InvocationTargetException ex) {
+                            Logger.getLogger(XmlInjectorImpl.class.getName()).log(
+                                    Level.SEVERE, null, ex);
+                        }
                     }
                 }
             }
         }
     }
-
-
-
-
-
 }

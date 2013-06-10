@@ -8,17 +8,16 @@ import org.moosbusch.museum.inject.impl.XmlInjectorImpl;
 import com.google.inject.Guice;
 import org.apache.xmlbeans.XmlObject;
 import org.moosbusch.museum.inject.XmlInjector;
-import org.moosbusch.museum.inject.MuseumXmlModule;
-import org.moosbusch.museum.inject.MuseumXmlObjectFactory;
-import org.moosbusch.museum.inject.evt.XmlInjectionListener;
-import org.moosbusch.museum.inject.evt.XmlPostProcessor;
+import org.moosbusch.museum.inject.XmlModule;
+import org.moosbusch.museum.inject.XmlObjectFactory;
+import org.moosbusch.museum.inject.XmlPostProcessor;
 
 /**
  *
  * @author moosbusch
  */
-public abstract class AbstractMuseumXmlObjectFactory<T extends MuseumXmlModule, V extends XmlObject>
-        implements MuseumXmlObjectFactory<T, V> {
+public abstract class AbstractXmlObjectFactory<T extends XmlModule, V extends XmlObject>
+        implements XmlObjectFactory<T, V> {
 
     private XmlInjector injector;
     private T module;
@@ -45,13 +44,15 @@ public abstract class AbstractMuseumXmlObjectFactory<T extends MuseumXmlModule, 
     }
 
     @Override
-    public <X extends XmlObject> void injectChildMembers(X entity) {
-        getInjector().injectMembers(entity);
+    public <X extends XmlObject> void injectChildMembers(X injectee) {
+        getInjector().injectMembers(injectee);
     }
 
     @Override
     public final <X extends XmlObject> X createTypedObject(Class<X> type) {
-        return getInjector().getInstance(type);
+        X result = getInjector().getInstance(type);
+        injectChildMembers(result);
+        return result;
     }
 
     @Override
@@ -61,17 +62,8 @@ public abstract class AbstractMuseumXmlObjectFactory<T extends MuseumXmlModule, 
     }
 
     @Override
-    public void addInjectionListener(XmlInjectionListener l) {
-        getInjector().addInjectionListener(l);
-    }
-
-    @Override
-    public void removeInjectionListener(XmlInjectionListener l) {
-        getInjector().removeInjectionListener(l);
-    }
-
-    @Override
-    public void registerXmlPostProcessor(Class<? extends XmlObject> targetClass, XmlPostProcessor p) {
+    public void registerXmlPostProcessor(Class<? extends XmlObject> targetClass,
+        XmlPostProcessor<? extends XmlObject> p) {
         getInjector().registerXmlPostProcessor(targetClass, p);
     }
 

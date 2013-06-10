@@ -6,14 +6,12 @@ package org.moosbusch.museum.inject;
 
 import org.apache.xmlbeans.ObjectFactory;
 import org.apache.xmlbeans.XmlObject;
-import org.moosbusch.museum.inject.evt.XmlInjectionListener;
-import org.moosbusch.museum.inject.evt.XmlPostProcessor;
 
 /**
  *
  * @author moosbusch
  */
-public interface MuseumXmlObjectFactory<M extends MuseumXmlModule, R extends XmlObject>
+public interface XmlObjectFactory<M extends XmlModule, R extends XmlObject>
         extends ObjectFactory {
 
     public M getModule();
@@ -26,11 +24,8 @@ public interface MuseumXmlObjectFactory<M extends MuseumXmlModule, R extends Xml
 
     public R createRootElement();
 
-    public void addInjectionListener(XmlInjectionListener l);
-
-    public void removeInjectionListener(XmlInjectionListener l);
-
-    public void registerXmlPostProcessor(Class<? extends XmlObject> targetClass, XmlPostProcessor p);
+    public void registerXmlPostProcessor(Class<? extends XmlObject> targetClass,
+            XmlPostProcessor<? extends XmlObject> p);
 
     public void unregisterXmlPostProcessor(Class<? extends XmlObject> targetClass);
 }

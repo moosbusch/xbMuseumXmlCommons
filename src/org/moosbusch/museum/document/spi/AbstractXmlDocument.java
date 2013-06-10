@@ -1,5 +1,5 @@
 /*
- * 
+ *
  *
  */
 package org.moosbusch.museum.document.spi;
@@ -16,26 +16,26 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 import org.apache.xmlbeans.impl.store.Path;
-import org.moosbusch.museum.document.MuseumXmlDocument;
-import org.moosbusch.museum.inject.MuseumXmlObjectFactory;
-import org.moosbusch.museum.inject.MuseumXmlModule;
+import org.moosbusch.museum.document.XmlDocument;
+import org.moosbusch.museum.inject.XmlObjectFactory;
+import org.moosbusch.museum.inject.XmlModule;
 
 /**
  *
  * @author moosbusch
  */
-public abstract class AbstractMuseumXmlDocument<T extends XmlObject, V extends MuseumXmlObjectFactory<? extends MuseumXmlModule, T>, U extends XmlObject, E extends XmlObject>
-        implements MuseumXmlDocument<T, V, U, E> {
+public abstract class AbstractXmlDocument<T extends XmlObject, V extends XmlObjectFactory<? extends XmlModule, T>, U extends XmlObject, E extends XmlObject>
+        implements XmlDocument<T, V, U, E> {
 
     private final V objectFactory;
     private T rootWrapper;
 
-    public AbstractMuseumXmlDocument() {
+    public AbstractXmlDocument() {
         this.objectFactory = initObjectFactory();
         init();
     }
 
-    public AbstractMuseumXmlDocument(InputStream in) throws IOException, XmlException {
+    public AbstractXmlDocument(InputStream in) throws IOException, XmlException {
         this.objectFactory = initObjectFactory();
         init(in);
     }
@@ -96,13 +96,13 @@ public abstract class AbstractMuseumXmlDocument<T extends XmlObject, V extends M
     }
 
     @Override
-    public void addItem(E entry) {
-        getItems().add(entry);
+    public void addRecord(E record) {
+        getRecords().add(record);
     }
 
     @Override
-    public void removeItem(E entry) {
-        getItems().remove(entry);
+    public void removeRecord(E record) {
+        getRecords().remove(record);
     }
 
     @Override
