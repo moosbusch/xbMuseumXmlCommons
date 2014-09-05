@@ -21,7 +21,7 @@ import org.apache.xmlbeans.XmlObject;
  *
  * @author moosbusch
  */
-public interface XmlPostProcessor<T extends XmlObject> {
+public interface MuseumXmlPostProcessor<T extends XmlObject> {
 
     public void postProcess(T xmlObject);
 

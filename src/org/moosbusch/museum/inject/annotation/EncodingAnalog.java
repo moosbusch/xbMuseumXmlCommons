@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moosbusch.museum.inject;
+package org.moosbusch.museum.inject.annotation;
 
-import com.google.inject.Module;
-import com.google.inject.Provides;
-import org.apache.xmlbeans.XmlObject;
-import org.moosbusch.museum.document.XmlDocument;
+import com.google.inject.BindingAnnotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  *
  * @author moosbusch
  */
-public interface XmlModule extends Module {
-
-    @Provides
-    public XmlDocument<? extends XmlObject, ? extends XmlObjectFactory
-            <? extends XmlModule, ? extends XmlObject>,
-            ? extends XmlObject, ? extends XmlObject> createDocument();
-
-    public String getLanguage();
+@BindingAnnotation
+@Target({ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface EncodingAnalog {
 
 }

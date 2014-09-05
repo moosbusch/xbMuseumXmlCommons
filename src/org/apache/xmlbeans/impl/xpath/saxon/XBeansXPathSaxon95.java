@@ -70,29 +70,31 @@ import org.apache.xmlbeans.impl.store.PathDelegate;
         this.namespaceMap = namespaceMap.entrySet().toArray();
     }
 
-    /**
+    /**<p>
      * Select all nodes that are selectable by this XPath
      * expression. If multiple nodes match, multiple nodes
      * will be returned.
-     * <p/>
-     * <p/>
+     * </p>
+     *
+     * <p>
      * <b>NOTE:</b> In most cases, nodes will be returned
      * in document-order, as defined by the XML Canonicalization
      * specification.  The exception occurs when using XPath
      * expressions involving the <code>union</code> operator
      * (denoted with the pipe '|' character).
      * </p>
-     * <p/>
-     * <p/>
+     *
+     * <p>
      * <b>NOTE:</b> Param node must be a DOM node which will be used
      * during the xpath execution and iteration through the results.
      * A call of node.dispose() must be done after reading all results.
-     * </p>
-     *
+     *</p>
+     * <p>
      * @param node The node, nodeset or Context object for evaluation.
      * This value can be null.
      * @return The <code>List</code> of all items selected
      *         by this XPath expression.
+     * </p>
      */
     public List selectNodes(Object node)
     {

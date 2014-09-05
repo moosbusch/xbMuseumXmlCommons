@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2013 Gunnar Kappei.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,9 +20,11 @@ import com.google.inject.Key;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import org.moosbusch.museum.inject.XmlInjector;
-import static org.moosbusch.museum.inject.XmlInjector.ARRAY_METHOD_SUFFIX;
-import static org.moosbusch.museum.inject.XmlInjector.SET_METHOD_PREFIX;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.xmlbeans.SchemaProperty;
+import org.apache.xmlbeans.SchemaType;
+import org.moosbusch.museum.inject.MuseumXmlInjector;
 
 /**
  *
@@ -30,7 +32,20 @@ import static org.moosbusch.museum.inject.XmlInjector.SET_METHOD_PREFIX;
  */
 public class XmlInjectionUtil {
 
-    public static boolean isInjectableSetterMethod(XmlInjector injector, Method m) {
+    public static List<SchemaProperty> getRequiredProperties(SchemaType schemaType) {
+        List<SchemaProperty> result = new ArrayList<SchemaProperty>();
+        SchemaProperty[] properties = schemaType.getProperties();
+
+        for (SchemaProperty property : properties) {
+            if (property.getMinOccurs().intValue() > 0) {
+                result.add(property);
+            }
+        }
+
+        return result;
+    }
+
+    public static boolean isInjectableSetterMethod(MuseumXmlInjector injector, Method m) {
         if ((m.getAnnotation(com.google.inject.Inject.class) != null)
                 || (m.getAnnotation(javax.inject.Inject.class) != null)) {
             if ((isPublicInstanceMethod(m)) && (isSetterMethod(m))) {
@@ -55,12 +70,12 @@ public class XmlInjectionUtil {
     }
 
     public static boolean isSetterMethod(Method m) {
-        return ((m.getName().startsWith(SET_METHOD_PREFIX))
+        return ((m.getName().startsWith(MuseumXmlInjector.SET_METHOD_PREFIX))
                 && (void.class.isAssignableFrom(m.getReturnType())));
     }
 
     public static boolean isArraySetterMethod(Method m) {
-        if (m.getName().endsWith(ARRAY_METHOD_SUFFIX)) {
+        if (m.getName().endsWith(MuseumXmlInjector.ARRAY_METHOD_SUFFIX)) {
             Class<?>[] paramTypes = m.getParameterTypes();
 
             if (paramTypes.length == 1) {
@@ -82,8 +97,8 @@ public class XmlInjectionUtil {
 
         for (Annotation[] annotations : paramAnnotations) {
             for (Annotation annotation : annotations) {
-                Class<? extends Annotation> annotationType =
-                        annotation.annotationType();
+                Class<? extends Annotation> annotationType
+                        = annotation.annotationType();
 
                 if (annotationType.isAnnotationPresent(BindingAnnotation.class)) {
                     return annotation;
@@ -94,7 +109,7 @@ public class XmlInjectionUtil {
         return null;
     }
 
-    public static Object createParameterValue(XmlInjector injector, Class<?> paramType,
+    public static Object createParameterValue(MuseumXmlInjector injector, Class<?> paramType,
             Annotation bindingAnnotation) {
         Key<?> bindingKey;
         Object result;
