@@ -28,7 +28,7 @@ copyright notices and license terms. Your use of the source code for
 these subcomponents is subject to the terms and conditions of the
 subcomponent's license, as noted above.
 
-Copyright (C) 2013 Gunnar Kappei (gkappei@web.de). Verbatim copying
+Copyright (C) 2013-2014 Gunnar Kappei (gkappei@web.de). Verbatim copying
 and distribution of this entire article is permitted in any medium,
 provided this notice is preserved.
 --------------------------------------------------------------------------------
