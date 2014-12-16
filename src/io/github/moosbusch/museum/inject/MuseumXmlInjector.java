@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moosbusch.museum.inject;
+package io.github.moosbusch.museum.inject;
 
 import com.google.inject.Injector;
-import java.lang.reflect.InvocationTargetException;
-import org.apache.xmlbeans.XmlObject;
 
 /**
  *
@@ -25,18 +23,19 @@ import org.apache.xmlbeans.XmlObject;
  */
 public interface MuseumXmlInjector extends Injector {
 
+    public static final String ADD_METHOD_NAME = "add";
+    public static final String GET_METHOD_PREFIX = "get";
     public static final String SET_METHOD_PREFIX = "set";
-    public static final String ARRAY_METHOD_SUFFIX = "Array";
+    public static final String LIST_METHOD_SUFFIX = "List";
 
     @Override
     public void injectMembers(Object injectee);
 
-    public void injectXmlMembers(XmlObject injectee) throws IllegalAccessException,
-            IllegalArgumentException, InvocationTargetException;
+//    public void injectXmlMembers(XmlObject injectee) throws IllegalAccessException,
+//            IllegalArgumentException, InvocationTargetException;
 
-    public void registerXmlPostProcessor(Class<? extends XmlObject> targetClass,
-            MuseumXmlPostProcessor<? extends XmlObject> p);
+    public void registerXmlPostProcessor(MuseumXmlPostProcessor p);
 
-    public void unregisterXmlPostProcessor(Class<? extends XmlObject> targetClass);
+    public void unregisterXmlPostProcessor(MuseumXmlPostProcessor p);
 
 }

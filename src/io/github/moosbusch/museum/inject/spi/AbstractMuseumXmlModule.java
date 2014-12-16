@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2013 Gunnar Kappei.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,21 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moosbusch.museum.inject.annotation;
+package io.github.moosbusch.museum.inject.spi;
 
-import com.google.inject.BindingAnnotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.google.inject.AbstractModule;
+import io.github.moosbusch.museum.inject.MuseumXmlModule;
 
 /**
  *
  * @author moosbusch
  */
-@BindingAnnotation
-@Target({ElementType.PARAMETER})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface EncodingAnalog {
+public abstract class AbstractMuseumXmlModule extends AbstractModule
+        implements MuseumXmlModule {
+
+    protected void configureImpl() {
+    }
+
+    @Override
+    protected final void configure() {
+        binder().disableCircularProxies();
+        configureImpl();
+    }
 
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2013 Gunnar Kappei.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,24 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moosbusch.museum.inject;
+package io.github.moosbusch.museum.inject;
 
-import com.google.inject.Module;
-import com.google.inject.Provides;
+import java.util.Map;
 import org.apache.xmlbeans.XmlObject;
-import org.moosbusch.museum.document.MuseumXmlDocument;
 
 /**
  *
  * @author moosbusch
  */
-public interface MuseumXmlModule extends Module {
+public interface MuseumXmlPostProcessor {
 
-    @Provides
-    public MuseumXmlDocument<? extends XmlObject, ? extends MuseumXmlObjectFactory
-            <? extends MuseumXmlModule, ? extends XmlObject>,
-            ? extends XmlObject, ? extends XmlObject> createDocument();
+    public static final String LANGUAGE_SETTER_METHOD_NAME = "setLang";
+    public static final String LANGUAGE_ENCODING_SETTER_METHOD_NAME
+            = "setLanguageencoding";
+    public static final String RELATED_ENCODING_SETTER_METHOD_NAME
+            = "setRelatedencoding";
+    public static final String ENCODING_ANALOG_SETTER_METHOD_NAME
+            = "setEncodinganalog";
 
-    public String getLanguage();
+    public void postProcess(MuseumXmlInjector injector, XmlObject xmlObject);
 
+    public Map<String, String> getStringMappings();
 }

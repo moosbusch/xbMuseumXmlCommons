@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moosbusch.museum.document;
+package io.github.moosbusch.museum.document;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,8 +23,7 @@ import java.util.Locale;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
-import org.moosbusch.museum.inject.MuseumXmlModule;
-import org.moosbusch.museum.inject.MuseumXmlObjectFactory;
+import io.github.moosbusch.museum.inject.MuseumXmlModule;
 
 /**
  *
@@ -43,9 +42,12 @@ public interface MuseumXmlDocument<T extends XmlObject,
     public static final String XML_SCHEMA_NS_URI =
             "http://www.w3.org/2001/XMLSchema-instance";
     public static final String SCHEMA_LOCATION_ATTR = "schemaLocation";
-    public static final String DEFAULT_LANGUAGE =
+    public static final String GENERIC_STRING_VALUE = "FOO";
+    public static final String DEFAULT_LANGUAGE_ENCODING_VALUE = "RFC3066";
+    public static final String DEFAULT_ENCODING_ANALOG_VALUE = "DC";
+    public static final String DEFAULT_RELATED_ENCODING_VALUE = "DC";
+    public static final String DEFAULT_LANGUAGE_VALUE =
             Locale.getDefault().getLanguage();
-    public static final String DEFAULT_RELATED_ENCODING = "DC";
 
     public String xmlText();
 

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2013 Gunnar Kappei.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,16 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moosbusch.museum.inject;
+package io.github.moosbusch.museum.inject;
 
+import com.google.inject.Module;
+import com.google.inject.Provides;
 import org.apache.xmlbeans.XmlObject;
+import io.github.moosbusch.museum.document.MuseumXmlDocument;
+import io.github.moosbusch.museum.document.MuseumXmlObjectFactory;
 
 /**
  *
  * @author moosbusch
  */
-public interface MuseumXmlPostProcessor<T extends XmlObject> {
+public interface MuseumXmlModule extends Module {
 
-    public void postProcess(T xmlObject);
+    @Provides
+    public MuseumXmlDocument<? extends XmlObject, ? extends MuseumXmlObjectFactory
+            <? extends MuseumXmlModule, ? extends XmlObject>,
+            ? extends XmlObject, ? extends XmlObject> createDocument();
 
 }

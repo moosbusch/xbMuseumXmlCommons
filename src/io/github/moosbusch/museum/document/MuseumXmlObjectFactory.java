@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moosbusch.museum.inject;
+package io.github.moosbusch.museum.document;
 
 import org.apache.xmlbeans.ObjectFactory;
 import org.apache.xmlbeans.XmlObject;
+import io.github.moosbusch.museum.inject.MuseumXmlInjector;
+import io.github.moosbusch.museum.inject.MuseumXmlModule;
+import io.github.moosbusch.museum.inject.MuseumXmlPostProcessor;
 
 /**
  *
@@ -35,10 +38,9 @@ public interface MuseumXmlObjectFactory<M extends MuseumXmlModule, R extends Xml
 
     public <X extends XmlObject> X createTypedObject(Class<X> type);
 
-    public R createRootWrapper();
+    public R createRootWrapperElement();
 
-    public void registerXmlPostProcessor(Class<? extends XmlObject> targetClass,
-            MuseumXmlPostProcessor<? extends XmlObject> p);
+    public void registerXmlPostProcessor(MuseumXmlPostProcessor p);
 
-    public void unregisterXmlPostProcessor(Class<? extends XmlObject> targetClass);
+    public void unregisterXmlPostProcessor(MuseumXmlPostProcessor p);
 }

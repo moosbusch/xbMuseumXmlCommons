@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moosbusch.museum.document.spi;
+package io.github.moosbusch.museum.document.spi;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,9 +25,9 @@ import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 import org.apache.xmlbeans.impl.store.Path;
-import org.moosbusch.museum.document.MuseumXmlDocument;
-import org.moosbusch.museum.inject.MuseumXmlModule;
-import org.moosbusch.museum.inject.MuseumXmlObjectFactory;
+import io.github.moosbusch.museum.document.MuseumXmlDocument;
+import io.github.moosbusch.museum.inject.MuseumXmlModule;
+import io.github.moosbusch.museum.document.MuseumXmlObjectFactory;
 
 /**
  *
@@ -73,7 +73,7 @@ public abstract class AbstractMuseumXmlDocument<T extends XmlObject, V extends M
 
     @Override
     public void clearDocument() {
-        setRootWrapperElement(getObjectFactory().createRootWrapper());
+        setRootWrapperElement(getObjectFactory().createRootWrapperElement());
     }
 
     @Override
