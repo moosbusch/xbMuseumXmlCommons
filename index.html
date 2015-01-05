@@ -1,1 +1,417 @@
-Hello world!
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+  <title>xbMuseumXmlCommons by moosbusch</title>
+  <link rel="stylesheet"
+  href="./stylesheets/styles.css" />
+  <link rel="stylesheet"
+  href="./stylesheets/pygment_trac.css" />
+  <meta name="viewport"
+  content="width=device-width, initial-scale=1, user-scalable=no" />
+  <!--[if lt IE 9]>
+                              <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+                              <![endif]-->
+</head>
+
+<body>
+<h1>xbMuseumXmlCommons</h1>
+
+<div>
+<h2>What is xbMuseumXmlCommons?</h2>
+
+<p>This library provides an API for operating on documents encoded in various
+harvesting formats currently in use for exchanging data related to museal
+collections. These formats are intended to enable museums to publish
+interchangeable data about their collections and the thesauri used to describe
+the objects contained within these collections. <br />
+Users might easily perform <a
+href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD</a>-operations
+on such documents using <em>xbMuseumXmlCommons</em>. It's also possible to run
+sophisticated queries against such documents.<br />
+It only works in conjunction with other add-on libraries, it can't be used
+standalone. Currently, there are <a
+href="http://github.com/moosbusch">sub-projects</a> bringing support for
+MuseumVok, MuseumDat, CdwaLite and Lido. That's why the sample code uses
+<em>xbMuseumVok</em> for demonstation purposes, but all add-ons work in exactly
+the same way, since <em>xbMuseumXmlCommons</em> provides an uniform interface
+for all of them.<br />
+The library might be used either in clients or servers, but it is mostly
+intended to be used by client programs due to its small footprint. It's not yet
+tested in a server-environment.</p>
+</div>
+
+<div>
+<h2>Getting started</h2>
+
+<p>Check out the sources from the <a
+href="http://github.com/moosbusch/xbMuseumXmlCommons">repository</a> and build
+them using your favorite build-tool or IDE. At least <strong>Java 6</strong> is
+required to compile, and you'll have to provide some additional dependencies as
+well:</p>
+
+<table>
+  <colgroup><col width="200" />
+  </colgroup>
+  <tbody>
+    <tr>
+      <td>Dependency</td>
+      <td>Version</td>
+    </tr>
+    <tr>
+      <td><a href="http://xmlbeans.apache.org">Apache XMLBeans</a> </td>
+      <td>&gt;= 2.6.0 </td>
+    </tr>
+    <tr>
+      <td><a href="http://saxonica.com">Saxonica Saxon HE</a> </td>
+      <td>&gt;= 9.5.x</td>
+    </tr>
+    <tr>
+      <td><a href="http://code.google.com/p/google-guice/">Google Guice</a>
+      </td>
+      <td>&gt;= 3.0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Note!</strong> There might be one or more transient dependencies for
+some of the used libraries which are not listed here. Make sure to include
+them! It's therefore a good idea to refer to the documentation of those
+projects, although you probably won't ever get in touch with them directly.</p>
+</div>
+
+<div>
+<h2>Basic usage</h2>
+
+<p style="text-align:justify;">Provided that you've managed the build process,
+you are ready to integrate this library in your application(s). First point to
+start from is creating an instance of the <em>MuseumXmlDocument</em> interface.
+You may implement this interface directly though you usually should not. There
+are default implementations provided (by the add-ons mentioned above) ready for
+use, and there is an abstract base class, <em>AbstractMuseumXmlDocument</em>,
+just implementing the most common functionality.<br />
+For now, it will be assumed that you have chosen to use a default
+implementation. The mentioned document-interface is declared within the
+<em>xbMuseumXmlCommons</em> library, since you are able to process documents of
+various type through only one interface! This means a great level of
+abstraction and therefore ease of use. This was one of the main motivations for
+creating this and the related projects. Let's have a look at the interface
+itself:</p>
+<pre><code>public interface MuseumXmlDocument&lt;T extends XmlObject, V extends MuseumXmlObjectFactory
+	&lt;? extends MuseumXmlModule, T&gt;, U extends XmlObject, E extends XmlObject&gt; {
+
+        public static final String PATH_DELEGATE_INTERFACE_CLASS =
+                "org.apache.xmlbeans.impl.xpath.saxon.XBeansXPathSaxon95";
+        public static final String XML_SCHEMA_NS_URI = "http://www.w3.org/2001/XMLSchema-instance";
+        public static final String SCHEMA_LOCATION_ATTR = "schemaLocation";
+        public static final String GENERIC_STRING_VALUE = "FOO";
+        public static final String DEFAULT_LANGUAGE_ENCODING_VALUE = "RFC3066";
+        public static final String DEFAULT_ENCODING_ANALOG_VALUE = "DC";
+        public static final String DEFAULT_RELATED_ENCODING_VALUE = "DC";
+        public static final String DEFAULT_LANGUAGE_VALUE = Locale.getDefault().getLanguage();
+
+        public String xmlText();
+
+        public String xmlText(XmlOptions options);
+
+        public T getRootWrapperElement();
+
+        public U getRootElement();
+
+        public void clearDocument();
+
+        public void loadDocument(InputStream input) throws IOException, XmlException;
+
+        public void saveDocument(OutputStream output) throws IOException;
+
+        public void addRecord(E record);
+
+        public void removeRecord(E record);
+
+        public Collection&lt;E&gt; getRecords();
+
+        public &lt;X extends Object&gt; Collection &lt;X&gt; getObjectsByXPath(String xpath, XmlOptions... options);
+
+        public &lt;X extends Object&gt; Collection &lt;X&gt; getObjectsByXQuery(String xquery, XmlOptions... options);
+
+        public &lt;X extends XmlObject&gt; X createTypedObject(Class&lt;X&gt; type);
+
+        public V getObjectFactory();
+}</code></pre>
+
+<p style="text-align:justify;">It is quite complex, but as stated above, you
+don't have to implement the whole interface by yourself. Instead you might
+create a default document like this:</p>
+<pre><code>io.github.moosbusch.museum.document.MuseumXmlDocument&lt;?, ?, ?, ?&gt; museumVokDocument =
+        new io.github.moosbusch.museum.museumvok.document.impl.DefaultMuseumVokXmlDocument();</code></pre>
+
+<p style="text-align:justify;">What looks like a “normal” document instance
+in fact isn't. As you might know, XML-applications are quite complex, resulting
+in a big bunch of tags, often deeply nested and verbose, and a certain amount
+of them must be present in a valid document. At this point xbMuseumVok
+definitely helps out. You don't have to worry about which data has to be
+provided to get a valid document at least. The mandatory content is already
+present at the time the document instance is created! Dependency injection did
+all the rest automagically. Thus, this documentation can focus on describing
+how to actually work with valid documents instead of creating them in a
+complicated fashion.</p>
+</div>
+
+<h2>Performing operations on documents</h2>
+
+<div>
+<p style="text-align:justify;">There basically only eight important methods to
+know about:</p>
+<pre><code>public void loadDocument(InputStream input) throws IOException, XmlException;
+
+public void saveDocument(OutputStream output) throws IOException;
+
+public &lt;X extends Object&gt; Collection &lt;X&gt; getObjectsByXPath(String xpath, XmlOptions... options);
+
+public &lt;X extends Object&gt; Collection &lt;X&gt; getObjectsByXQuery(String xquery, XmlOptions... options);
+
+public &lt;X extends XmlObject&gt; X createTypedObject(Class&lt;X&gt; type);
+
+public void addRecord(E entry);
+
+public void removeRecord(E entry);
+
+public Collection&lt;E&gt; getRecords();</code></pre>
+
+<h3>Loading and saving documents</h3>
+
+<p style="text-align:justify;">The first two methods,
+<em>loadDocument(...)</em> and <em>saveDocument(...)</em>, should be self
+explanatory. They either load or save the document contents from or to a stream
+which may be a file or some kind of resource on a network.</p>
+
+<h3>Retrieving data</h3>
+
+<p style="text-align:justify;">The next two methods,
+<em>getObjectsByXPath(...)</em> and <em>getObjectsByXQuery(...)</em>, are
+intended to provide access to the content. Using the first one, you might be
+able to access each document-element by providing a Xpath-expression. <a
+href="w3.org">XPath</a> is a xml-application designed to provide access to
+document elements via an uniform expression, describing the path from the
+current element to the root element of the document. Since <em>XPath</em> has a
+complex syntax it is not possible to cover it in depth. Refer to its
+specification instead.</p>
+
+<p style="text-align:justify;">The second method uses
+<em>XQuery</em>-expressions to retrieve data from the document and it's rather
+intended to be used for complex data-retrieval than for manipulating certain
+objects. For more information on how to use <a href="w3.org">XQuery</a>, the
+same has to be stated as for Xpath since the syntax of <em>Xquery</em> is even
+more complex.</p>
+
+<p style="text-align:justify;">A simple example:</p>
+<pre><code>java.util.Collection&lt;String&gt; prefLabels =
+        museumVokDocument.getObjectsByXPath("Concept/prefTerm/prefLabel[@lang=\"de\"]");</code></pre>
+
+<p style="text-align:justify;">The <em>museumVokDoc</em> variable is a document
+instance create before. The method returns one (or more, depending of the
+object type) result objects, bundled within a <em>Collection</em> (which
+actually has nothing to do with a collection in a museum...). This / these
+object(s) may now be modified or removed. The results may vary, depending on
+the Xpath-expression that is provided:</p>
+<pre><code>java.util.Collection&lt;Concept&gt; concepts = musVokDoc.getObjectsByXPath("Concept");</code></pre>
+
+<p>While this expression retrieves all objects of type <em>Concept</em>, this
+one limits the result to the fifth <em>Concept</em> found.</p>
+<pre><code>java.util.Collection&lt;Concept&gt; concepts = musVokDoc.getObjectsByXPath("Concept[5]");</code></pre>
+
+<p style="text-align:justify;">The use of <em>XQuery</em> is straight-forward
+and absolutely similar to the use of <em>Xpath</em>, so it is not necessary to
+cover it in detail, since there is only a different kind of expression to
+provide. If you had a look at the declaration of the methods, you might have
+wondered about the sense of the <em>XmlOptions... options</em> argument. You
+may change some preferences of the document, e.g. affecting how it is styled
+for output (pretty printing, intendation, …), but you can omit them like in
+the sample code above. Since it's a feature of <em>XMLBeans</em>, refer to its
+documentation to learn more.</p>
+
+<h3>Manipulating data, Part 1</h3>
+
+<p style="text-align:justify;">No matter if you're starting from a newly
+created, rather empty document that has to be filled with "meat", or from an
+existing one that has to be extended, you may want to add new data. This use
+case is addressed by the <em>createTypedObject(...)</em> method. This method is
+able to create every kind of object that is defined in the specification of the
+data format currently in use. Here is a simple example how to create such an
+object:</p>
+<pre><code>noNamespace.ConceptDocument.Concept concept =
+        musVokDoc.createTypedObject(noNamespace.ConceptDocument.Concept.class);</code></pre>
+
+<p style="text-align:justify;">Like whole documents, this newly created
+elements get their dependencies injected, meaning that they are valid document
+fragments containing the mandatory sub-elements out-of-the-box. This objects
+might now be edited and plugged into the document. This way of manipulating the
+document appears like plumbing a little bit – and in fact it is low-level
+processing. You'll have to have very detailed knowledge on the document
+structure and its data format. And there are some more cave-ats related to this
+way of editing documents. They are covered in the second part of this
+chapter.</p>
+
+<p style="text-align:justify;">An easier way to add content (called
+<em>records</em>) is to use one of the high-level methods, namely
+<em>addRecord(...)</em>, <em>removeRecord(...)</em> and <em>getRecords()</em>.
+While the last one returns a <em>Collection</em> of all records contained
+within a document, the remaining two methods either add or remove a record. The
+type a record actually consist of depends on the format currently in use. Of
+course each record [to be created by <em>createTypedObject(...)</em>] gets all
+the dependencies injected.</p>
+
+<p style="text-align:justify;">For a comprehension, have a look at a short
+example demonstrating how to create, load, clear, add data to and, finally,
+save a document:</p>
+<pre><code>io.github.moosbusch.museum.document.museumvok.MuseumVokXmlDocument&lt;?&gt; museumVokDoc =
+        new io.github.moosbusch.museum.document.museumvok.impl.DefaultMuseumVokXmlDocument();
+
+museumVokDoc.loadDocument(new FileInputStream(new File("museumVokTest.xml");
+musVokDoc.clearDocument();
+noNamespace.ConceptDocument.ConceptConcept concept = musVokDoc.createTypedObject(Concept.class);
+museumVokDoc.addRecord(concept);
+museumVokDoc.saveDocument(new FileOutputStream(new File("museumvokTest.xml")));</code></pre>
+
+<h3>Manipulating data, Part 2</h3>
+
+<h4>Cave-ats</h4>
+
+<p style="text-align:justify;">Now that the basic usage of
+<em>xbMuseumXmlCommons</em> should have been fairly figured out, there are some
+advanced topics to be addressed. On the one hand, there are some cave-ats
+(which can easily be avoided), and on the other hand, something has to be
+pointed out related to extensibility and customization.<br />
+As stated above, <em>xbMuseumXmlCommons</em>, relies on some
+third-party-dependencies. <em>XmlBeans</em> is used to provide bindings from
+XML to Java and vice versa, <em>Guice</em> is used for dependency injection.
+There is a Java-class for each XML-type, autogenerated by <em>XmlBeans</em>.
+These classes are very verbose, depending on the Xml-type it represents. We'll
+now have to have a look at one such class, which had to be abbreviated heavily
+for the purpose of demonstration, because the original class is consists of
+more than 1.200 lines of code... </p>
+<pre><code>public interface Concept extends org.apache.xmlbeans.XmlObject {
+
+        java.lang.String getAbout();
+
+        void setAbout(java.lang.String about);
+
+        java.util.List&lt;noNamespace.PrefTermDocument.PrefTerm&gt; getPrefTermList();
+
+        noNamespace.PrefTermDocument.PrefTerm insertNewPrefTerm(int index);
+
+        noNamespace.PrefTermDocument.PrefTerm addNewPrefTerm();
+
+        void setPrefTermArray(noNamespace.PrefTermDocument.PrefTerm[] prefTermArray);
+
+        void setPrefTermArray(int i, noNamespace.PrefTermDocument.PrefTerm prefTerm);
+
+        void removePrefTerm(int index);
+
+…
+
+}</code></pre>
+
+<p style="text-align:justify;">All these autogenerated classes contain methods
+named according to the following scheme, where "<em>Foo</em>" stands for
+<em>any kind</em> of type:</p>
+<pre><code>Foo insertNewFoo(int i);
+
+Foo addNewFoo();
+
+void setFooArray(Foo[] fooArray);
+
+void setFooArray(int i, Foo foo);</code></pre>
+
+<p><strong>Avoid using those methods under all circumstances!</strong> If you
+would, dependency injection won't work at all and you might end up with invalid
+content. But here is the correct way to accomplish the task of adding elements
+in a low-level manner:</p>
+<pre><code>Foo foo = document.createTypedObject(Foo.class);
+getFooList().add(foo);
+getFooList().add(index, foo);</code></pre>
+
+<p style="text-align:justify;">All other methods of these classes should work
+just fine. Feel free to use them if you need to.</p>
+
+<h4>Extensibility </h4>
+
+<p style="text-align:justify;">Each class derived from the interface
+MuseumXmlDocument implements this method, where "V" is derived from
+<em>MuseumXmlObjectFactory</em>:</p>
+<pre><code>public V getObjectFactory();</code></pre>
+
+<p>The value returned by this method is an instance of
+<em>MuseumXmlObjectFactory</em>, responsible for creating each kind of object
+to be contained within the document. Here is the source-code of that
+interface:</p>
+<pre><code>public interface MuseumXmlObjectFactory&lt;M extends MuseumXmlModule, R extends XmlObject&gt; extends ObjectFactory {
+
+	public M getModule();
+
+	public XmlInjector getInjector();
+
+	public &lt;X extends XmlObject&gt; void injectChildMembers(X entity);
+
+	public &lt;X extends XmlObject&gt; X createTypedObject(Class&lt;X&gt; type);
+
+	public R createRootWrapperElement();
+
+	public void registerXmlPostProcessor(Class&lt;? extends XmlObject&gt; targetClass,
+			XmlPostProcessor&lt;? extends XmlObject&gt; p);
+
+	public void unregisterXmlPostProcessor(Class&lt;? extends XmlObject&gt; targetClass);
+
+}</code></pre>
+
+<p style="text-align:justify;">If someone would like to extend the
+functionality of <em>xbMuseumXmlCommons</em>, there are two possible solutions
+already built-in:</p>
+<ol>
+  <li><p>Providing an instance of <em>MuseumXmlModule</em> through overriding
+    the <em>getModule()</em> method.</p>
+  </li>
+  <li><p>Registering an instance of <em>MuseumXmlPostProcessor</em> by calling
+    <em>registerXmlPostProcessor(...)</em>.</p>
+  </li>
+</ol>
+
+<p style="text-align:justify;">The first approach <em>affects the creation</em>
+of each object directly, since the <em>MuseumXmlModule</em> interface is
+basically a <em>Module</em> used by <em>Guice</em>. Perhaps refer to the
+according documentation to be found elsewhere how to accomplish that.<br />
+The second approach would be to register an instance of
+<em>MuseumXmlPostProcessor</em>. These post-processors will be called for each
+newly created object <em>after<strong></strong>
+instantation</em><strong></strong>.<strong></strong>Each instance would be
+created in the usual way, but some additional properties might be modified.
+Here are the sources for the <em>MuseumXmlPostProcessor</em>
+interface:<strong></strong></p>
+<pre><code>public interface MuseumXmlPostProcessor&lt;T extends XmlObject&gt; {
+	public static final String LANGUAGE_SETTER_METHOD_NAME = "setLang";
+	public static final String LANGUAGE_ENCODING_SETTER_METHOD_NAME = "setLanguageencoding";
+	public static final String RELATED_ENCODING_SETTER_METHOD_NAME = "setRelatedencoding";
+	public static final String ENCODING_ANALOG_SETTER_METHOD_NAME = "setEncodinganalog";
+
+	public void postProcess(MuseumXmlInjector injector, XmlObject xmlObject);
+
+	public Map&lt;String, String&gt; getStringMappings();
+}</code></pre>
+
+<p style="text-align:justify;">All there is to do is implementing two methods,
+<em>postProcess(...)</em> and <em>getStringMappings()</em>. The post-processing
+of objects as described above takes place within the first method. The second
+method overrides some default values for certain attributes that have to be
+present in the newly created documents, denoting the locale, and so on. This
+method is the place to change the default bevavior. Out-of-the-box, the value
+"Foo" is inserted, which is definitely to be changed in a production
+environment. </p>
+</div>
+<script type="text/javascript"
+src="../../moosbusch.github.io/javascripts/scale.fix.js">
+ </script>
+</body>
+</html>
